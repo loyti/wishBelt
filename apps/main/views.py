@@ -83,8 +83,14 @@ def itemInfo(request, item_id):
         return redirect('/')
 
     Items = Item.objects.all()
-    current_item = Item.objects.get(pk=id)
-    item = Item.objects.get(pk=id)
+
+    users = User.objects.all()
+    current_user = User.objects.get(id=request.session['user_id'])
+    user = User.objects.get(id=request.session['user_id'])
+
+    wishItems = user.user_items.all()
+
+    items = Item.objects.exclude(id__in=wishItems).order_by('-created_at')
 
     wishItems = user.user_items.all()
 
@@ -94,7 +100,6 @@ def itemInfo(request, item_id):
         'user' : user,
         'wishItems' : wishItems,
         'items': items,
-        'item' : item
     }
 
     return render(request, 'main/items.html', context)
