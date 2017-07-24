@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wish List</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'main/style.css' %}">
+  <link rel="stylesheet" href="{% static 'main/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'main/bootstrap-theme.css' %}">
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="col-md-1"></div>
+      <div class="col-md-10 jumbotron">
+        <h1>Welcome to the Wish List</h1>
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="col-md-2"></div>
+      <div class="col-md-4">
+        <h2>Hello, {{ user.user_name }}!</h2>
+        <h4>Your Wish List:</h4>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <td>Item</td>
+              <td>Added By</td>
+              <td>Date Added</td>
+              <td>Action</td>
+            </tr>
+          </thead>
+          <tr>
+            {% for item in items %}
+            <td><a href='/item/{{item.id}}'>{{ item.content }}</a></td>
+            <td>{{ item.user.user_name }}</td>
+            <td>{{ item.created_at }}</td>
+            <td>
+              <form action="/addWish/{{item.id}}" method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    <input type="submit" value="Add to Wish List">
+              </form>
+              <form action="/delete/{{item.id}}" method="post" class="form-horizontal">
+                {% csrf_token %}
+                <input type="submit" value="Delete from Wish List">
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="col-md-4">
+        <h2>Other Users Wish List Items</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <td>Item</td>
+              <td>Added By</td>
+              <td>Date Added</td>
+              <td>Action</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+            {% for wish in wishItems %}
+              <td><a href='/item/{{wish.id}}'>{{ wish.content }}</a></td>
+              <td>{{ wish.user.user_name }}</td>
+              <td>{{ wish.created_at }}</td>
+              <td>
+                <form action="/unWish/{{wish.id}}" method="post" class="form-horizontal">
+                      {% csrf_token %}
+                      <input type="submit" value="Remove from Wish List">
+                </form>
+                <form action="/delete/{{wish.id}}" method="post" class="form-horizontal">
+                  {% csrf_token %}
+                  <input type="submit" value="Delete from Wish List">
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-2">
+        <a href='/logout'>Logout</a>
+        <a href='/create'>Add Item</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
